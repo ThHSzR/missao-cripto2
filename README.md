@@ -33,3 +33,16 @@ Repositório iniciado. As implementações, testes e demais artefatos serão adi
 ## Referência
 
 Enunciado da disciplina: *2_M_PBL_Crip_Classica.pdf*, seções “Missão 2 – A mensagem interceptada” e “Produto da missão”.
+
+## Parte de Thiago — conceitos e Kerckhoffs
+
+A branch `thiago` contém o [resumo conceitual](docs/thiago/conceitos-e-kerckhoffs.md), o [roteiro](docs/thiago/roteiro-apresentacao.md), [dois slides sugeridos](docs/thiago/slides.md) e uma [demonstração executável](docs/thiago/implementacao.md) do exemplo numérico. A demonstração usa uma cópia identificada do módulo de aritmética modular da [Missão 1](https://github.com/ThHSzR/missao-cripto/blob/c7bbf16585cefa2cb1d817da6b1d1c7088e0ccf6/aritmetica_modular.py).
+
+Na raiz do repositório, com Python 3.10 ou superior:
+
+```bash
+python3 -m missao_cripto2.exemplo_conceitual
+python3 -m unittest discover -s tests -v
+```
+
+Este código ilustra texto claro, chave, regra pública, resultado e recuperação em um único símbolo. As implementações das cifras completas e dos ataques cabem aos respectivos responsáveis na divisão do grupo.
