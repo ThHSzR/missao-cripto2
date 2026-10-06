@@ -11,19 +11,13 @@
 # Reutiliza funções da biblioteca matemática da Missão 1 (mdc, inverso_multiplicativo).
 # ==============================================================================
 
-import sys
-from pathlib import Path
 import numpy as np
 import os
 import math
 
 # ------------------------------------------------------------------------------
-# Configuração de Ambiente e Importação da Missão 1
+# Importação dos módulos matemáticos da Missão 1, incluídos nesta raiz
 # ------------------------------------------------------------------------------
-# Adiciona dinamicamente a pasta 'missao-cripto' ao path de execução.
-# Isso garante que a biblioteca funcione em qualquer máquina sem precisar de instalação global.
-sys.path.append(str(Path(__file__).resolve().parent / "missao-cripto"))
-
 # Funções desenvolvidas na Missão 1 reutilizadas aqui:
 # - calcular_mdc / coprimos: garante que a matriz da Cifra de Hill tem inversa mod 26.
 # - inverso_multiplicativo: calcula o inverso modular do determinante para decifrar Hill.

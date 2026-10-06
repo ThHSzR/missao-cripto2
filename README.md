@@ -33,3 +33,14 @@ Repositório iniciado. As implementações, testes e demais artefatos serão adi
 ## Referência
 
 Enunciado da disciplina: *2_M_PBL_Crip_Classica.pdf*, seções “Missão 2 – A mensagem interceptada” e “Produto da missão”.
+
+## Cifras de Hill, transposição e fluxo
+
+A contribuição de Mateus está em `minhas_cifras.py`; `test_cifras.py` demonstra as três técnicas com a mensagem do enunciado. As funções de `mdc.py`, `euclides_estendido.py` e `inverso_multiplicativo.py` ficam na raiz para a integração matemática. Os dois últimos módulos foram incorporados de [`missao-cripto`](https://github.com/ThHSzR/missao-cripto/tree/c7bbf16585cefa2cb1d817da6b1d1c7088e0ccf6) (revisão `c7bbf16585cefa2cb1d817da6b1d1c7088e0ccf6`); `mdc.py` já estava neste repositório.
+
+```bash
+python3 -m pip install -r requirements.txt
+python3 test_cifras.py
+```
+
+Hill e transposição removem espaços e pontuação e podem acrescentar `X` para completar os blocos; portanto, a saída decifrada desses exemplos não é idêntica byte a byte à mensagem original. A cifra de fluxo conserva a mensagem original ao decifrar com a mesma chave de bytes.
