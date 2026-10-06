@@ -36,9 +36,10 @@ def quebrar_afim(cifrado: str, decifrar_afim) -> tuple:
 
 # Testes
 if __name__ == "__main__":
-    from cesar import decifrar_cesar  # ajustar para o nome real
+    from cesar import cesar_decifrar as decifrar_cesar
     from afim_vigenere import CifraAfim
 
+    # A função da marini recebe (texto, a, b); a força bruta passa a chave como (a, b).
     def decifrar_afim(texto, chave):
         a, b = chave
         return CifraAfim.decifrar(texto, a, b)
