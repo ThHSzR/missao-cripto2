@@ -37,12 +37,12 @@ def quebrar_afim(cifrado: str, decifrar_afim) -> tuple:
 # Testes
 if __name__ == "__main__":
     from cesar import cesar_decifrar as decifrar_cesar
-    from afim_vigenere import CifraAfim
+    from afim import decifrar_afim as afim_decifrar
 
     # A função da marini recebe (texto, a, b); a força bruta passa a chave como (a, b).
     def decifrar_afim(texto, chave):
         a, b = chave
-        return CifraAfim.decifrar(texto, a, b)
+        return afim_decifrar(texto, a, b)
 
     # "TRANSFERIR DOCUMENTO PARA SERVIDOR CENTRAL" cifrada
     c_cesar = "AYHUZMLYPYKVJBTLUAVWHYHZLYCPKVYJLUAYHS"  # César, chave 7
