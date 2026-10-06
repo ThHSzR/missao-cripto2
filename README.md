@@ -1,46 +1,34 @@
 # Missão Cripto 2 — A mensagem interceptada
 
-Repositório da **Missão 2** do projeto SecureDocs, da disciplina de Criptografia Aplicada. A atividade investiga como transformar uma mensagem em texto claro para que seu conteúdo não seja compreendido diretamente por quem a interceptar.
+Projeto didático de Criptografia Aplicada sobre a mensagem interceptada no cenário SecureDocs:
+`TRANSFERIR DOCUMENTO PARA SERVIDOR CENTRAL`.
 
-## Contexto
+## Implementações reunidas na main
 
-No cenário proposto, um funcionário envia a mensagem:
+| Técnica ou material | Arquivos |
+|---|---|
+| César e substituição | `cesar.py`, `substituicao.py` |
+| Afim e Vigenère | `afim.py`, `vigenere.py`; menu alternativo em `afim_vigenere.py` |
+| Hill, transposição colunar e fluxo XOR | `minhas_cifras.py` |
+| Matemática modular da Missão 1 | `mdc.py`, `euclides_estendido.py`, `inverso_multiplicativo.py` |
+| Criptoanálise e comparação | `forca_bruta.py`, `analise_frequencia.py`, `frequencia_pt.py`, `comparacao_cifras.py` |
+| Introdução, Kerckhoffs e exemplo conceitual | `docs/thiago/`, `missao_cripto2/` |
 
-> TRANSFERIR DOCUMENTO PARA SERVIDOR CENTRAL
+O material do grupo para a apresentação está nos arquivos `Criptografia_Clássica_(2).pdf` e `.pptx`.
 
-A transmissão é interceptada. A equipe deve pesquisar, experimentar e comparar técnicas de criptografia clássica, além de analisar como algumas delas podem ser quebradas por força bruta ou análise de frequência.
-
-## Objetivos da missão
-
-- Estudar texto claro, texto cifrado, cifragem, decifragem, chaves e criptoanálise.
-- Experimentar cifras clássicas, como César, substituição, Afim, Vigenère, Hill, transposição e cifras de fluxo, conforme as técnicas escolhidas pelo grupo.
-- Implementar uma biblioteca com as técnicas estudadas, preferencialmente em Python e com apoio da biblioteca matemática da Missão 1.
-- Testar as implementações e discutir suas limitações.
-- Explicar por que ocultar o algoritmo não basta para garantir segurança, à luz do princípio de Kerckhoffs.
-
-## Entregáveis previstos no enunciado
-
-1. Resumo dos conceitos básicos de criptografia e dos algoritmos estudados.
-2. Biblioteca com as implementações das técnicas criptográficas clássicas estudadas.
-3. Apresentação de 10 minutos dos artefatos produzidos até o momento.
-
-## Estado do projeto
-
-Repositório iniciado. As implementações, testes e demais artefatos serão adicionados ao longo da missão.
-
-> **Nota:** cifras clássicas são estudadas aqui para fins didáticos. Este repositório ainda não representa uma solução de segurança pronta para proteger os documentos do SecureDocs.
-
-## Referência
-
-Enunciado da disciplina: *2_M_PBL_Crip_Classica.pdf*, seções “Missão 2 – A mensagem interceptada” e “Produto da missão”.
-
-## Cifras de Hill, transposição e fluxo
-
-A contribuição de Mateus está em `minhas_cifras.py`; `test_cifras.py` demonstra as três técnicas com a mensagem do enunciado. As funções de `mdc.py`, `euclides_estendido.py` e `inverso_multiplicativo.py` ficam na raiz para a integração matemática. Os dois últimos módulos foram incorporados de [`missao-cripto`](https://github.com/ThHSzR/missao-cripto/tree/c7bbf16585cefa2cb1d817da6b1d1c7088e0ccf6) (revisão `c7bbf16585cefa2cb1d817da6b1d1c7088e0ccf6`); `mdc.py` já estava neste repositório.
+## Executar
 
 ```bash
 python3 -m pip install -r requirements.txt
-python3 test_cifras.py
+python3 test_cifras.py            # pede a dimensão 2 a 8 da matriz de Hill
+python3 test_cifras.py --padrao   # demonstração automática com matriz 3x3
+python3 teste_main.py            # demonstração Afim e Vigenère
+python3 afim_vigenere.py         # menu interativo alternativo da branch thiago
+python3 -m unittest discover -s tests -v
 ```
 
-Hill e transposição removem espaços e pontuação e podem acrescentar `X` para completar os blocos; portanto, a saída decifrada desses exemplos não é idêntica byte a byte à mensagem original. A cifra de fluxo conserva a mensagem original ao decifrar com a mesma chave de bytes.
+Na demonstração de Hill, escolha a dimensão e use a matriz sugerida ou digite uma matriz inteira de sua preferência. Matrizes sem inversa módulo 26 são rejeitadas e podem ser digitadas novamente. A biblioteca aceita matrizes quadradas inteiras e calcula o determinante sem arredondamento. A interface limita a escolha a 2–8 para manter a entrada manual prática.
+
+Hill e transposição retiram espaços e pontuação e acrescentam `X` para completar blocos; portanto, a saída decifrada pode conter `X` final. A cifra de fluxo recupera o texto original completo. Os métodos clássicos deste projeto são para estudo, não para proteção de documentos reais.
+
+Enunciado da disciplina: *2_M_PBL_Crip_Classica.pdf*, seções “Missão 2 – A mensagem interceptada” e “Produto da missão”.

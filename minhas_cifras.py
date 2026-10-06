@@ -45,13 +45,49 @@ def preparar_texto_hill(texto, tamanho_bloco):
     3. Aplica padding com 'X' se o tamanho do texto não for múltiplo de tamanho_bloco.
     4. Mapeia caracteres para números inteiros: A -> 0, B -> 1, ..., Z -> 25.
     """
-    texto_limpo = "".join([c.upper() for c in texto if c.isalpha()])
+    if tamanho_bloco < 1:
+        raise ValueError("O tamanho do bloco deve ser positivo.")
+    texto_limpo = "".join(c for c in texto.upper() if 'A' <= c <= 'Z')
     
     # Preenchimento (padding) para completar o último bloco
     while len(texto_limpo) % tamanho_bloco != 0:
         texto_limpo += "X"
         
     return [ord(c) - ord('A') for c in texto_limpo]
+
+
+def _chave_hill(matriz_chave):
+    """Exige matriz quadrada de inteiros e reduz as entradas módulo 26."""
+    matriz = np.asarray(matriz_chave, dtype=object)
+    if matriz.ndim != 2 or not matriz.shape[0] or matriz.shape[0] != matriz.shape[1]:
+        raise ValueError("A chave de Hill deve ser uma matriz quadrada não vazia.")
+    if any(not isinstance(x, (int, np.integer)) or isinstance(x, (bool, np.bool_))
+           for x in matriz.flat):
+        raise ValueError("A matriz de Hill deve conter somente números inteiros.")
+    return matriz % 26
+
+
+def _determinante_exato(matriz):
+    """Calcula determinante inteiro por eliminação de Bareiss, sem arredondamento."""
+    a = [[int(x) for x in linha] for linha in matriz]
+    n = len(a)
+    if n == 0:
+        return 1  # determinante do menor vazio, usado na adjunta 1x1
+    sinal, anterior = 1, 1
+    for k in range(n - 1):
+        if a[k][k] == 0:
+            troca = next((i for i in range(k + 1, n) if a[i][k] != 0), None)
+            if troca is None:
+                return 0
+            a[k], a[troca] = a[troca], a[k]
+            sinal = -sinal
+        pivo = a[k][k]
+        for i in range(k + 1, n):
+            for j in range(k + 1, n):
+                a[i][j] = (a[i][j] * pivo - a[i][k] * a[k][j]) // anterior
+            a[i][k] = 0
+        anterior = pivo
+    return sinal * a[-1][-1]
 
 
 def validar_chave_hill(matriz_chave):
@@ -64,7 +100,7 @@ def validar_chave_hill(matriz_chave):
     Caso contrário, não existe o inverso multiplicativo de det(K) mod 26.
     """
     tamanho_alfabeto = 26
-    det = int(round(np.linalg.det(matriz_chave))) % tamanho_alfabeto
+    det = _determinante_exato(_chave_hill(matriz_chave)) % tamanho_alfabeto
     
     # Ponto de integração com a Missão 1: validação por coprimos
     if not coprimos(det, tamanho_alfabeto):
@@ -84,19 +120,22 @@ def matriz_inversa_modular(matriz_chave, modulo=26):
     - det(K)^(-1) é o inverso multiplicativo modular do determinante (função da Missão 1).
     - adj(K) é a matriz adjunta (transposta da matriz de cofatores).
     """
-    det = validar_chave_hill(matriz_chave)
+    if modulo != 26:
+        raise ValueError("Esta implementação usa o alfabeto A-Z e módulo 26.")
+    chave = _chave_hill(matriz_chave)
+    det = validar_chave_hill(chave)
     
     # Ponto de integração com a Missão 1: inverso multiplicativo
     det_inv = inverso_multiplicativo(det, modulo)
     
-    n = matriz_chave.shape[0]
+    n = chave.shape[0]
     matriz_adj = np.zeros((n, n), dtype=int)
     
     # Cálculo manual da matriz de cofatores transposta (matriz adjunta)
     for i in range(n):
         for j in range(n):
-            submatriz = np.delete(np.delete(matriz_chave, i, axis=0), j, axis=1)
-            cofator = ((-1) ** (i + j)) * int(round(np.linalg.det(submatriz)))
+            submatriz = np.delete(np.delete(chave, i, axis=0), j, axis=1)
+            cofator = ((-1) ** (i + j)) * _determinante_exato(submatriz)
             # matriz_adj[j][i] já armazena a transposta
             matriz_adj[j][i] = cofator % modulo
             
@@ -113,13 +152,14 @@ def cifra_hill(texto, matriz_chave):
     - C: vetor coluna resultante cifrado.
     """
     validar_chave_hill(matriz_chave)
-    bloco_tam = matriz_chave.shape[0]
+    chave = _chave_hill(matriz_chave)
+    bloco_tam = chave.shape[0]
     vetor_numeros = preparar_texto_hill(texto, bloco_tam)
     
     cifrado = ""
     for i in range(0, len(vetor_numeros), bloco_tam):
         bloco = np.array(vetor_numeros[i:i + bloco_tam])
-        resultado = np.dot(matriz_chave, bloco) % 26
+        resultado = np.dot(chave, bloco) % 26
         cifrado += "".join(chr(int(n) + ord('A')) for n in resultado)
         
     return cifrado
@@ -131,7 +171,9 @@ def decifra_hill(texto_cifrado, matriz_chave):
     Aplica a multiplicação dos blocos cifrados pela matriz inversa modular.
     """
     matriz_inv = matriz_inversa_modular(matriz_chave, modulo=26)
-    bloco_tam = matriz_chave.shape[0]
+    bloco_tam = matriz_inv.shape[0]
+    if any(not ('A' <= c <= 'Z') for c in texto_cifrado) or len(texto_cifrado) % bloco_tam:
+        raise ValueError("O texto cifrado deve conter apenas A-Z em blocos completos.")
     vetor_numeros = [ord(c) - ord('A') for c in texto_cifrado]
     
     decifrado = ""
