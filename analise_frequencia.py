@@ -24,7 +24,7 @@ def quebrar_cesar_por_frequencia(cifrado: str, decifrar_cesar) -> tuple:
 
 # Testes
 if __name__ == "__main__":
-    from cesar import decifrar_cesar  # ajustar para o nome real (Nicole)
+    from cesar import cesar_decifrar as decifrar_cesar
 
     # Mensagem curta (38 letras), César chave 7
     c_curto = "AYHUZMLYPYKVJBTLUAVWHYHZLYCPKVYJLUAYHS"
