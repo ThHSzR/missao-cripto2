@@ -37,7 +37,11 @@ def quebrar_afim(cifrado: str, decifrar_afim) -> tuple:
 # Testes
 if __name__ == "__main__":
     from cesar import decifrar_cesar  # ajustar para o nome real
-    from afim import decifrar_afim    # ajustar para o nome real
+    from afim_vigenere import CifraAfim
+
+    def decifrar_afim(texto, chave):
+        a, b = chave
+        return CifraAfim.decifrar(texto, a, b)
 
     # "TRANSFERIR DOCUMENTO PARA SERVIDOR CENTRAL" cifrada
     c_cesar = "AYHUZMLYPYKVJBTLUAVWHYHZLYCPKVYJLUAYHS"  # César, chave 7
