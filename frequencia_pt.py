@@ -3,7 +3,9 @@
 Criador: Guilherme Aguiar Moreira
 """
 
-__all__ = ["ALFABETO", "FREQ_PT", "contar_frequencias", "pontuar"]
+import unicodedata
+
+__all__ = ["ALFABETO", "FREQ_PT", "limpar", "contar_frequencias", "pontuar"]
 
 ALFABETO = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -17,15 +19,35 @@ FREQ_PT = {
 }
 
 
+def limpar(texto: str) -> str:
+    """Remove acentos, espaços e pontuação; deixa só letras maiúsculas A-Z."""
+    texto = unicodedata.normalize("NFD", texto)
+    texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
+    return "".join(c for c in texto.upper() if c in ALFABETO)
+
+
 def contar_frequencias(texto: str) -> dict:
     """Retorna a porcentagem de cada letra no texto."""
+    texto = limpar(texto)
+
+    # Texto vazio: todas as letras com frequência 0.
+    if not texto:
+        return {l: 0.0 for l in ALFABETO}
+
     return {l: texto.count(l) * 100 / len(texto) for l in ALFABETO}
 
 
 def pontuar(texto: str) -> float:
     """Mede o quanto o texto parece português (qui-quadrado).
+
     Quanto MENOR a nota, mais parecido com português.
     """
+    texto = limpar(texto)
+
+    # Texto vazio não parece português: nota infinita.
+    if not texto:
+        return float("inf")
+
     nota = 0
 
     # Compara quantas vezes cada letra aparece com o esperado no português.
